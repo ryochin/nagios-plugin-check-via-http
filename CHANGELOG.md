@@ -1,6 +1,13 @@
 Changelog
 =========
 
+v0.1.2
+------
+
+### Improvements
+
+* implemented query values encoding feature.
+
 v0.1.1
 ------
 
