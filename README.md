@@ -22,6 +22,7 @@ OPTIONS:
     -p, --port <PORT>            HTTP port [default: 80 on http, 443 on https]
     -q, --query <QUERY>          Queries (multiple times)
     -s, --ssl                    use HTTPS (https://)
+    -t, --timeout <TIMEOUT>      Timeout [default: 15]
     -u, --uri <URI>              HTTP uri [default: /]
     -V, --version                Print version information
 ```

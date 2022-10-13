@@ -30,6 +30,10 @@ struct Args {
     /// Queries (multiple times)
     #[clap(short, long, value_parser)]
     query: Vec<String>,
+
+    /// Timeout
+    #[clap(short, long, default_value_t = 15, value_parser)]
+    timeout: u64,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
@@ -49,9 +53,11 @@ const UNKNOWN: i32 = 3;
 fn main() -> ! {
     let args: Args = Args::parse();
 
+    let timeout = Duration::from_secs(args.timeout);
+
     let agent: Agent = ureq::AgentBuilder::new()
-        .timeout_read(Duration::from_secs(15))
-        .timeout_write(Duration::from_secs(15))
+        .timeout_read(timeout)
+        .timeout_write(timeout)
         .build();
 
     let uri: Uri = build_uri(&args).unwrap();
