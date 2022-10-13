@@ -3,12 +3,13 @@ use std::time::Duration;
 
 use clap::{Parser, ValueEnum};
 use http::uri::{self, Uri};
+use percent_encoding::{percent_encode, NON_ALPHANUMERIC};
 use serde::Deserialize;
 use serde_json;
 use ureq::Agent;
 
 /// Simple Nagios Plugin of remote HTTP Executor
-#[derive(Parser, Debug)]
+#[derive(Parser, Debug, Clone)]
 #[clap(author, version, about, long_about = None)]
 struct Args {
     /// use HTTPS (https://)
@@ -86,7 +87,14 @@ fn build_uri(args: &Args) -> Result<Uri, http::Error> {
     let query = if args.query.is_empty() {
         String::from("")
     } else {
-        format!("?{}", args.query.join("&"))
+        let queries: Vec<String> = args
+            .query
+            .clone()
+            .into_iter()
+            .map(|pair| encode_query_pair(pair))
+            .collect();
+
+        format!("?{}", queries.join("&"))
     };
 
     uri::Builder::new()
@@ -94,6 +102,18 @@ fn build_uri(args: &Args) -> Result<Uri, http::Error> {
         .authority(format!("{}:{}", args.hostname, port))
         .path_and_query(format!("{}{}", args.uri, query))
         .build()
+}
+
+fn encode_query_pair(pair: String) -> String {
+    if let Some((key, val)) = pair.split_once('=') {
+        format!(
+            "{}={}",
+            key,
+            percent_encode(val.as_bytes(), NON_ALPHANUMERIC).to_string()
+        )
+    } else {
+        pair
+    }
 }
 
 fn exit_with_internal_error(msg: String) -> ! {
