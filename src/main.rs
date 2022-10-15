@@ -50,6 +50,7 @@ pub struct CheckResult {
 }
 
 const UNKNOWN: i32 = 3;
+const USER_AGENT: &str = "check_via_http";
 
 fn main() -> ! {
     let args: Args = Args::parse();
@@ -59,6 +60,7 @@ fn main() -> ! {
     let agent: Agent = ureq::AgentBuilder::new()
         .timeout_read(timeout)
         .timeout_write(timeout)
+        .user_agent(&format!("{}/{}", USER_AGENT, env!("CARGO_PKG_VERSION")))
         .build();
 
     let uri: Uri = build_uri(&args).unwrap();
