@@ -1,6 +1,13 @@
 Changelog
 =========
 
+v0.1.3
+------
+
+### Improvements
+
+* set 'check_via_http' as User-Agent header field.
+
 v0.1.2
 ------
 
